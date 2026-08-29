@@ -668,6 +668,18 @@ def install_dflash_glm5_backend() -> bool:
 
     changed = False
     changed |= _install_glm5_prefill_chunking_bridge()
+    try:
+        from omlx.patches.dflash_glm5_prefix_cache import (
+            install_glm5_dflash_prefix_cache,
+        )
+
+        changed |= install_glm5_dflash_prefix_cache()
+    except Exception:
+        import logging
+
+        logging.getLogger(__name__).exception(
+            "GLM DFlash prefix-cache enable failed; serving without it"
+        )
     if _BACKEND_PATH not in target_ops.TARGET_BACKENDS:
         target_ops.TARGET_BACKENDS.append(_BACKEND_PATH)
         changed = True
